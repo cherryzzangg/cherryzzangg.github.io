@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<!--相册样式-->
+<script src="/js/photoswipe.min.js?v="></script>
+<script src="/js/photoswipe-ui-default.min.js?v="></script>
+
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"cherryzzangg.site","root":"/","scheme":"Muse","version":"7.7.2","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="前言  本文介绍了有关数据不均衡分布的问题，包括解决该类问题的主要方法。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="imbalanced data不平衡样本的问题">
+<meta property="og:url" content="http://cherryzzangg.site/2018/08/20/imbalanced%20data%E4%B8%8D%E5%B9%B3%E8%A1%A1%E6%A0%B7%E6%9C%AC%E7%9A%84%E9%97%AE%E9%A2%98/index.html">
+<meta property="og:site_name" content="CherryZzangg">
+<meta property="og:description" content="前言  本文介绍了有关数据不均衡分布的问题，包括解决该类问题的主要方法。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2018/08/20/5b7a7d18e275c.jpg">
+<meta property="og:image" content="https://i.loli.net/2018/08/20/5b7a7cb1cabc7.jpg">
+<meta property="og:image" content="https://i.loli.net/2018/08/20/5b7a7d62dfc4c.jpg">
+<meta property="og:image" content="https://i.loli.net/2018/08/20/5b7a7fa4a59d6.jpg">
+<meta property="og:image" content="https://i.loli.net/2018/08/20/5b7a81a29bc43.jpg">
+<meta property="og:image" content="https://i.loli.net/2018/08/20/5b7a83a74cfee.jpg">
+<meta property="og:image" content="https://i.loli.net/2018/08/20/5b7a84d17ed06.jpg">
+<meta property="og:image" content="https://i.loli.net/2018/08/20/5b7a84a733cef.jpg">
+<meta property="article:published_time" content="2018-08-20T11:32:02.000Z">
+<meta property="article:modified_time" content="2020-03-14T14:04:38.093Z">
+<meta property="article:author" content="cherryzzangg">
+<meta property="article:tag" content="机器学习">
+<meta property="article:tag" content="样本分布">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2018/08/20/5b7a7d18e275c.jpg">
+
+<link rel="canonical" href="http://cherryzzangg.site/2018/08/20/imbalanced%20data%E4%B8%8D%E5%B9%B3%E8%A1%A1%E6%A0%B7%E6%9C%AC%E7%9A%84%E9%97%AE%E9%A2%98/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>imbalanced data不平衡样本的问题 | CherryZzangg</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <!--相册样式-->
+  
+
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">CherryZzangg</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">淡泊明志，宁静致远</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-photos">
+
+    <a href="/photos/" rel="section"><i class="fa fa-fw fa-camera"></i>相册</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="search-pop-overlay">
+  <div class="popup search-popup">
+      <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+  </div>
+</div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://cherryzzangg.site/2018/08/20/imbalanced%20data%E4%B8%8D%E5%B9%B3%E8%A1%A1%E6%A0%B7%E6%9C%AC%E7%9A%84%E9%97%AE%E9%A2%98/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="cherryzzangg">
+      <meta itemprop="description" content="Drive it like you stole it.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="CherryZzangg">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          imbalanced data不平衡样本的问题
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-08-20 19:32:02" itemprop="dateCreated datePublished" datetime="2018-08-20T19:32:02+08:00">2018-08-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-14 22:04:38" itemprop="dateModified" datetime="2020-03-14T22:04:38+08:00">2020-03-14</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2018/08/20/imbalanced%20data%E4%B8%8D%E5%B9%B3%E8%A1%A1%E6%A0%B7%E6%9C%AC%E7%9A%84%E9%97%AE%E9%A2%98/" class="post-meta-item leancloud_visitors" data-flag-title="imbalanced data不平衡样本的问题" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">评论数：</span>
+    
+    <a title="valine" href="/2018/08/20/imbalanced%20data%E4%B8%8D%E5%B9%B3%E8%A1%A1%E6%A0%B7%E6%9C%AC%E7%9A%84%E9%97%AE%E9%A2%98/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2018/08/20/imbalanced%20data%E4%B8%8D%E5%B9%B3%E8%A1%A1%E6%A0%B7%E6%9C%AC%E7%9A%84%E9%97%AE%E9%A2%98/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1.4k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>1 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <img src="https://i.loli.net/2018/08/20/5b7a7d18e275c.jpg" width="85%" height="85%">
+<h2 id="前言">前言</h2>
+<blockquote>
+<p>本文介绍了有关数据不均衡分布的问题，包括解决该类问题的主要方法。</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="1-动机（motivation）">1. 动机（motivation）</h2>
+<p>机器学习中分类问题存在许多数据样本不均衡的问题，特征的分类平面会向少数类方向偏移，不利于机器学习任务。因此，我们需要调整数据分布形成平衡的数据集，再进行特征学习。</p>
+<h2 id="2-产生原因">2. 产生原因</h2>
+<ul>
+<li>内部：the nature of the dataspace，数据本身存在的分布不均衡（医学上的问题），例如患病率导致在人群中的分布不均衡</li>
+<li>外部：采样的方式（比例不同）</li>
+<li>相对关系：相对majority不平衡</li>
+<li>绝对少数</li>
+<li>类间和类内的不平衡：Between-class and inter-class imbalance</li>
+<li>具有相同label的小簇</li>
+</ul>
+<h2 id="3-采样的问题">3. 采样的问题</h2>
+<h3 id="3-1-降采样和过采样">3.1 降采样和过采样</h3>
+<ul>
+<li>随机降采样（Random Under-sampling）</li>
+</ul>
+<p>减少大多数类别的数量（Cut the majority），有可能会导致丢失大类内重要的数据。</p>
+<ul>
+<li>随机过采样（Random Oversampling）：扩展小类别，就是通过有放回的抽样，不断的从少数类的抽取样本，数据重复的方式可能会导致过拟合现象。</li>
+</ul>
+<h3 id="3-2-bagging-降采样">3.2 bagging+降采样</h3>
+<p><img src="https://i.loli.net/2018/08/20/5b7a7cb1cabc7.jpg" alt="boostrap.jpg"></p>
+<ul>
+<li>
+<p>从大类中采样进行bagging，降采样后与少数具有相同的尺寸大小。</p>
+</li>
+<li>
+<p>训练多个平衡的分类器，形成ensemble网络。</p>
+</li>
+<li>
+<p>融合所有平衡的分类器的输出。</p>
+</li>
+</ul>
+<h3 id="3-3-EasyEnsemble（AdaBoost-bagging）">3.3 EasyEnsemble（AdaBoost+bagging）</h3>
+<p>（X.Y. Liu, J. Wu, and Z.H. Zhou, ICDM, 2006）</p>
+<p>类似上述过程，主要差异在训练一系列AdaBoost的Ensembles网络</p>
+<h3 id="3-4-过采样（SMOTE）">3.4 过采样（SMOTE）</h3>
+<p>Synthetic minority oversampling technique (SMOTE)</p>
+<ul>
+<li>
+<p>计算点p在S中的k个最近邻。</p>
+</li>
+<li>
+<p>有放回地随机抽取R≤k个邻居。</p>
+</li>
+<li>
+<p>对这R个点，每一个点与点p可以组成一条直线，然后在这条直线上随机取一个点，就产生了一个新的样本，一共可以这样做从而产生R个新的点。</p>
+</li>
+<li>
+<p>将这些新的点加入S中连线上插值产生数据。</p>
+</li>
+</ul>
+<p><img src="https://i.loli.net/2018/08/20/5b7a7d62dfc4c.jpg" alt="SMOTE.jpg"></p>
+<ul>
+<li>缺点：
+<ul>
+<li>过度生成数据，盲目的扩展少数类而不去考虑大类；</li>
+<li>少数类可能非常稀疏化，导致类别的混淆。</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-5-Borderline-SMOTE">3.5 Borderline-SMOTE</h3>
+<ul>
+<li>
+<p>计算点p在训练集T上的m个最近邻。我们称这个集合为Mp然后设 m’= |Mp ∩ L| (表示点p的最近邻中属于L的数量)；</p>
+</li>
+<li>
+<p>If m’= m, p 是一个噪声,不做任何操作；</p>
+</li>
+<li>
+<p>If 0 ≤m’≤m/2, 则说明p很安全，不做任何操作；</p>
+</li>
+<li>
+<p>If m/2 ≤ m’≤ m,那么点p就很危险了，我们需要在这个点附近生成一些新的少数类点，所以我们把它加入到DANGER中。最后，对于每个在DANGER中的点d，使用SMOTE算法生成新的样本。</p>
+</li>
+</ul>
+<p><img src="https://i.loli.net/2018/08/20/5b7a7fa4a59d6.jpg" alt="border_SMOTE.jpg"></p>
+<h3 id="3-6-SMOTE-Tomek">3.6 SMOTE+Tomek</h3>
+<p>Upsampling+Downsampling(数据清洗)</p>
+<p><img src="https://i.loli.net/2018/08/20/5b7a81a29bc43.jpg" alt="SMOTE-Tomek.jpg"></p>
+<h3 id="3-7-缺点">3.7 缺点</h3>
+<ul>
+<li>
+<p>需要好的映射（embedding）</p>
+</li>
+<li>
+<p>不能解决难例问题</p>
+</li>
+<li>
+<p>class weight:1个点当0.5个点</p>
+</li>
+<li>
+<p>新生成的点对数据分类性能并无特别提升</p>
+</li>
+<li>
+<p>新生成有可能混淆原始分布</p>
+</li>
+</ul>
+<h2 id="4-Cost-sensitive-Methods">4. Cost-sensitive Methods</h2>
+<p>基于损失函数敏感的方法</p>
+<ul>
+<li>
+<p>类别权重调整</p>
+</li>
+<li>
+<p>Focal Loss/hard example mining</p>
+</li>
+<li>
+<p>Class-dependent layer: 输出层和损失层之间添加的一层</p>
+</li>
+</ul>
+<p><img src="https://i.loli.net/2018/08/20/5b7a83a74cfee.jpg" alt="class-balanced layer.jpg"></p>
+<ul>
+<li>
+<p>Rank-based Loss(损失排序)</p>
+</li>
+<li>
+<p>instance-level re-weighting</p>
+</li>
+</ul>
+<h2 id="5-metric-learning-methods">5.metric learning methods</h2>
+<ul>
+<li>triplet &amp; quintuplet(五元组构成三个loss)</li>
+</ul>
+<p><img src="https://i.loli.net/2018/08/20/5b7a84d17ed06.jpg" alt="triplet.jpg"></p>
+<p><img src="https://i.loli.net/2018/08/20/5b7a84a733cef.jpg" alt="quintuplet.jpg"></p>
+<h2 id="6-深度学习方法">6.深度学习方法</h2>
+<p>学习embedding和分类器</p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>cherryzzangg
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://cherryzzangg.site/2018/08/20/imbalanced%20data%E4%B8%8D%E5%B9%B3%E8%A1%A1%E6%A0%B7%E6%9C%AC%E7%9A%84%E9%97%AE%E9%A2%98/" title="imbalanced data不平衡样本的问题">http://cherryzzangg.site/2018/08/20/imbalanced data不平衡样本的问题/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag"># 机器学习</a>
+              <a href="/tags/%E6%A0%B7%E6%9C%AC%E5%88%86%E5%B8%83/" rel="tag"># 样本分布</a>
+          </div>
+
+        
+  <div class="post-widgets">
+    <div class="wp_rating">
+      <div id="wpac-rating"></div>
+    </div>
+  </div>
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/04/12/%E5%8C%BB%E7%96%97AI%E2%80%94%E2%80%94%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%AE%97%E6%B3%95%E6%96%B9%E5%90%91offer%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/" rel="prev" title="医疗AI——深度学习算法方向offer面试总结">
+      <i class="fa fa-chevron-left"></i> 医疗AI——深度学习算法方向offer面试总结
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/02/10/Win10%E7%A7%92%E5%8F%98Mac%E6%89%93%E9%80%A0%E9%85%B7%E7%82%AB%E6%A1%8C%E9%9D%A2/" rel="next" title="打造酷炫桌面——win10秒变mac">
+      打造酷炫桌面——win10秒变mac <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-动机（motivation）"><span class="nav-text">1. 动机（motivation）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-产生原因"><span class="nav-text">2. 产生原因</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-采样的问题"><span class="nav-text">3. 采样的问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-降采样和过采样"><span class="nav-text">3.1 降采样和过采样</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-bagging-降采样"><span class="nav-text">3.2 bagging+降采样</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-EasyEnsemble（AdaBoost-bagging）"><span class="nav-text">3.3 EasyEnsemble（AdaBoost+bagging）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4-过采样（SMOTE）"><span class="nav-text">3.4 过采样（SMOTE）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-5-Borderline-SMOTE"><span class="nav-text">3.5 Borderline-SMOTE</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-6-SMOTE-Tomek"><span class="nav-text">3.6 SMOTE+Tomek</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-7-缺点"><span class="nav-text">3.7 缺点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-Cost-sensitive-Methods"><span class="nav-text">4. Cost-sensitive Methods</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-metric-learning-methods"><span class="nav-text">5.metric learning methods</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-深度学习方法"><span class="nav-text">6.深度学习方法</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="cherryzzangg"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">cherryzzangg</p>
+  <div class="site-description" itemprop="description">Drive it like you stole it.</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">14</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/cherryzzangg" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;cherryzzangg" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://weibo.com/cherryzzangg" title="Weibo → http:&#x2F;&#x2F;weibo.com&#x2F;cherryzzangg" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-globe"></i>
+      友情链接
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://rowl1ng.com/" title="http:&#x2F;&#x2F;rowl1ng.com&#x2F;" rel="noopener" target="_blank">黑客与画家</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">cherryzzangg</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    <span title="站点总字数">34k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">31 分钟</span>
+</div>
+  <div class="theme-info">主题 – <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.7.2
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        你是来访的第<span id="busuanzi_value_site_uv"></span>位小可爱
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+  <script>
+  if (CONFIG.page.isPost) {
+    wpac_init = window.wpac_init || [];
+    wpac_init.push({
+      widget: 'Rating',
+      id    : 15466,
+      el    : 'wpac-rating',
+      color : 'fc6423'
+    });
+    (function() {
+      if ('WIDGETPACK_LOADED' in window) return;
+      WIDGETPACK_LOADED = true;
+      var mc = document.createElement('script');
+      mc.type = 'text/javascript';
+      mc.async = true;
+      mc.src = '//embed.widgetpack.com/widget.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(mc, s.nextSibling);
+    })();
+  }
+  </script>
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : true,
+      appId      : 'Y51WeJj4vh2LlCCfc36MXUsp-gzGzoHsz',
+      appKey     : 'CYV17ycmtp6jgUOIOX2e9cU5',
+      placeholder: "留下邮箱，回复会有提醒哦~",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
+
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/love.js"></script>

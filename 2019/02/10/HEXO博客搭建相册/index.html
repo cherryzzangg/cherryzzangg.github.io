@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<!--相册样式-->
+<script src="/js/photoswipe.min.js?v="></script>
+<script src="/js/photoswipe-ui-default.min.js?v="></script>
+
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"cherryzzangg.site","root":"/","scheme":"Muse","version":"7.7.2","exturl":false,"sidebar":{"position":"right","display":"hide","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"valine","storage":true,"lazyload":false,"nav":null,"activeClass":"valine"},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="前言  本文主要介绍一些hexo博客搭建相册页面的具体过程，适配Next主题，简约又不失条理，一起试试吧~">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HEXO博客搭建相册">
+<meta property="og:url" content="http://cherryzzangg.site/2019/02/10/HEXO%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E7%9B%B8%E5%86%8C/index.html">
+<meta property="og:site_name" content="CherryZzangg">
+<meta property="og:description" content="前言  本文主要介绍一些hexo博客搭建相册页面的具体过程，适配Next主题，简约又不失条理，一起试试吧~">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://pmt8a42fu.bkt.clouddn.com/album.jpg">
+<meta property="article:published_time" content="2019-02-10T07:25:48.000Z">
+<meta property="article:modified_time" content="2020-03-15T03:33:13.543Z">
+<meta property="article:author" content="cherryzzangg">
+<meta property="article:tag" content="hexo">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://pmt8a42fu.bkt.clouddn.com/album.jpg">
+
+<link rel="canonical" href="http://cherryzzangg.site/2019/02/10/HEXO%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E7%9B%B8%E5%86%8C/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true
+  };
+</script>
+
+  <title>HEXO博客搭建相册 | CherryZzangg</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <!--相册样式-->
+  
+
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">CherryZzangg</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">淡泊明志，宁静致远</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-photos">
+
+    <a href="/photos/" rel="section"><i class="fa fa-fw fa-camera"></i>相册</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="search-pop-overlay">
+  <div class="popup search-popup">
+      <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+  </div>
+</div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://cherryzzangg.site/2019/02/10/HEXO%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E7%9B%B8%E5%86%8C/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="cherryzzangg">
+      <meta itemprop="description" content="Drive it like you stole it.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="CherryZzangg">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          HEXO博客搭建相册
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-02-10 15:25:48" itemprop="dateCreated datePublished" datetime="2019-02-10T15:25:48+08:00">2019-02-10</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-15 11:33:13" itemprop="dateModified" datetime="2020-03-15T11:33:13+08:00">2020-03-15</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%89%8D%E7%AB%AF%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">前端技术</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2019/02/10/HEXO%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E7%9B%B8%E5%86%8C/" class="post-meta-item leancloud_visitors" data-flag-title="HEXO博客搭建相册" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="fa fa-comment-o"></i>
+      </span>
+      <span class="post-meta-item-text">评论数：</span>
+    
+    <a title="valine" href="/2019/02/10/HEXO%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E7%9B%B8%E5%86%8C/#valine-comments" itemprop="discussionUrl">
+      <span class="post-comments-count valine-comment-count" data-xid="/2019/02/10/HEXO%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E7%9B%B8%E5%86%8C/" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>5.7k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>5 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <!--<img src="http://pmt8a42fu.bkt.clouddn.com/album.jpg" width="85%" height="85%">-->
+<h2 id="前言">前言</h2>
+<blockquote>
+<p>本文主要介绍一些hexo博客搭建相册页面的具体过程，适配Next主题，简约又不失条理，一起试试吧~</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="1-安装fancybox功能">1. 安装fancybox功能</h2>
+<p>fancybox功能主要用于实现相册图片的点击放大，能够形成相册效果。安装过程如下：</p>
+<h3 id="1-1-修改配置文件">1.1 修改配置文件</h3>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Fancybox. There is support for old version 2 and new version 3.</span></span><br><span class="line"><span class="comment"># Please, choose only any one variant, do not need to install both.</span></span><br><span class="line"><span class="comment"># For install 2.x: https://github.com/theme-next/theme-next-fancybox</span></span><br><span class="line"><span class="comment"># For install 3.x: https://github.com/theme-next/theme-next-fancybox3</span></span><br><span class="line"><span class="attr">fancybox:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+<h3 id="1-2-按照fancybox官网的安装步骤">1.2 按照fancybox官网的安装步骤</h3>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ <span class="built_in">cd</span> themes/next</span><br><span class="line">$ git <span class="built_in">clone</span> https://github.com/theme-next/theme-next-fancybox3 <span class="built_in">source</span>/lib/fancybox</span><br><span class="line">$ <span class="built_in">cd</span> themes/next/<span class="built_in">source</span>/lib/fancybox</span><br><span class="line">$ git pull <span class="comment">#更新</span></span><br></pre></td></tr></table></figure>
+<h2 id="2-图片处理">2. 图片处理</h2>
+<p>本教程的相册图片是存放在coding.net的云端，也可以存在Github上，首先在本地服务器中建立名为album的文件夹，其中子文件夹/photos用来存放图片，目录树如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">album</span><br><span class="line">│</span><br><span class="line">└───min_photos</span><br><span class="line">│</span><br><span class="line">└───photos</span><br><span class="line">│   ├───pic1.jpg</span><br><span class="line">│   └───pic2.jpg</span><br><span class="line">│    </span><br><span class="line">└───ImageProcess.py</span><br><span class="line">│</span><br><span class="line">└───tool.py</span><br></pre></td></tr></table></figure>
+<ul>
+<li>
+<p><a href="https://dev.tencent.com/u/cherryzzangg/p/Hexo-Workspace/git/blob/master/album/ImageProcess.py" target="_blank" rel="noopener">ImageProcess.py</a> ——对图片进行压缩编辑；</p>
+</li>
+<li>
+<p>安装PIL库，只需执行：<code>pip install Pillow</code>；</p>
+</li>
+<li>
+<p>在/hexo/themes/next/source/lib中新建一个文件夹album，修改<code>tool.py</code>中自己的json文件保存路径，此文件存储了图片的链接，名称和简介，其中<code>ensure_ascii=False</code>是防止文件名中文乱码；</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">with open(&quot;YourBolgPath&#x2F;themes&#x2F;next&#x2F;source&#x2F;lib&#x2F;album&#x2F;data.json&quot;,&quot;w&quot;) as fp:</span><br><span class="line">    json.dump(final_dict, fp, ensure_ascii&#x3D;False)</span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p>为了保证相册按时间顺序排列，在函数<code>handle_photo</code>中进行修改；</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">file_list = sorted(list_img_file(src_dir))</span><br></pre></td></tr></table></figure>
+</li>
+<li>
+<p>执行脚本<a href="https://dev.tencent.com/u/cherryzzangg/p/Hexo-Workspace/git/blob/master/album/tool.py" target="_blank" rel="noopener">tool.py</a>文件，生成<code>data.json</code>，并Git上传到coding.Net或Github；</p>
+</li>
+<li>
+<p>注意图片命名方式需要按照特定方式即：2017-02-02_discriptionofyourpic.jpg，图片的格式支持常见格式，时间和描述之间存在下划线。</p>
+</li>
+</ul>
+<h2 id="3-博客相册页面">3. 博客相册页面</h2>
+<ul>
+<li>
+<p>在博客根目录下添加photo页面；</p>
+<p><code>hexo n page photos</code></p>
+</li>
+<li>
+<p>在themes/next/_config.yml配置文件中menu选项中添加photos:</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">menu:</span><br><span class="line">  home: &#x2F; || home</span><br><span class="line">  about: &#x2F;about&#x2F; || user</span><br><span class="line">  tags: &#x2F;tags&#x2F; || tags</span><br><span class="line">  categories: &#x2F;categories&#x2F; || th</span><br><span class="line">  archives: &#x2F;archives&#x2F; || archive</span><br><span class="line">  相册: &#x2F;photos&#x2F;  || camera</span><br></pre></td></tr></table></figure>
+<ul>
+<li>在photos中的index.md添加如下代码</li>
+</ul>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">title: 相册</span><br><span class="line">date: 2019-02-14 12:57:30</span><br><span class="line">type: photos</span><br><span class="line">fancybox: false</span><br><span class="line">comments: true</span><br><span class="line">---</span><br><span class="line"></span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"stylesheet"</span> <span class="attr">href</span>=<span class="string">"../lib/album/ins.css"</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"stylesheet"</span> <span class="attr">href</span>=<span class="string">"../lib/album/photoswipe.css"</span>&gt;</span></span> </span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">"stylesheet"</span> <span class="attr">href</span>=<span class="string">"../lib/album/default-skin/default-skin.css"</span>&gt;</span></span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"instagram itemscope"</span>&gt;</span></span></span><br><span class="line">  <span class="xml"><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">"http://yourbolg.com"</span> <span class="attr">target</span>=<span class="string">"_blank"</span> <span class="attr">class</span>=<span class="string">"open-ins"</span>&gt;</span></span>图片正在加载中…<span class="xml"><span class="tag">&lt;/<span class="name">a</span>&gt;</span></span></span><br><span class="line"><span class="xml"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="xml"><span class="tag">&lt;<span class="name">script</span>&gt;</span></span></span><br><span class="line">  (function() &#123;</span><br><span class="line"><span class="code">    var loadScript = function(path) &#123;</span></span><br><span class="line"><span class="code">      var $script = document.createElement('script')</span></span><br><span class="line"><span class="code">      document.getElementsByTagName('body')[0].appendChild($script)</span></span><br><span class="line"><span class="code">      $script.setAttribute('src', path)</span></span><br><span class="line"><span class="code">    &#125;</span></span><br><span class="line"><span class="code">    setTimeout(function() &#123;</span></span><br><span class="line"><span class="code">        loadScript('../lib/album/ins.js')</span></span><br><span class="line"><span class="code">    &#125;, 0)</span></span><br><span class="line">  &#125;)()</span><br><span class="line"><span class="xml"><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span></span><br></pre></td></tr></table></figure>
+<p>注意修改源路径为你自己博客的域名。</p>
+<h2 id="4-js-CSS文件">4. js&amp;CSS文件</h2>
+<ul>
+<li>
+<p>我们还需要添加css文件和js文件，具体文件见<a href="https://dev.tencent.com/u/cherryzzangg/p/Hexo-Workspace/git/tree/master/blog/themes/next/source/lib/album" target="_blank" rel="noopener">我的album</a>；</p>
+</li>
+<li>
+<p>注意/assets文件夹必须含有<code>empty.png</code>，否则图片缩略图可能不显示；</p>
+</li>
+<li>
+<p>CSS文件拷贝到前面创建的<code>/themes/next/source/lib/album</code>中；</p>
+</li>
+<li>
+<p>然后再将<a href="https://dev.tencent.com/u/cherryzzangg/p/Hexo-Workspace/git/blob/master/blog/themes/next/source/js/src/photoswipe-ui-default.min.js" target="_blank" rel="noopener">photoswipe-ui-default.min.js</a>，<a href="https://dev.tencent.com/u/cherryzzangg/p/Hexo-Workspace/git/blob/master/blog/themes/next/source/js/src/photoswipe.min.js" target="_blank" rel="noopener">photoswipe.min.js</a>两个文件添加到themes/next/source/js/src中；</p>
+</li>
+<li>
+<p>对ins.js文件进行一个简单的修正，将里面大约在121和122行左右的连接修改为你的图片连接地址（注意必须是图片点击放大的源文件地址，否则显示会出错，本教程coding,net的地址）</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//var minSrc = 'https://raw.githubusercontent.com/yourgithub/Blog_Album/master/min_photos/' + data.link[i];</span></span><br><span class="line"><span class="keyword">var</span> minSrc = <span class="string">'https://dev.tencent.com/u/cherryzzangg/p/Hexo-Workspace/git/raw/master/album/min_photos/'</span> + data.link[i];</span><br><span class="line"><span class="comment">//var src = 'https://raw.githubusercontent.com/yourgithub/Blog_Album/master/photos/' + data.link[i];</span></span><br><span class="line"><span class="keyword">var</span> src = <span class="string">'https://dev.tencent.com/u/cherryzzangg/p/Hexo-Workspace/git/raw/master/album/photos/'</span> + data.link[i];</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="5-其他配置">5. 其他配置</h2>
+<ul>
+<li>引用配置在<code>next/layout/_layout.swig</code>的头部前添加对js文件的引用如下：</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;script src=<span class="string">"&#123;&#123; url_for(theme.js) &#125;&#125;/src/photoswipe.min.js?v=&#123;&#123; theme.version &#125;&#125;"</span>&gt;&lt;<span class="regexp">/script&gt;</span></span><br><span class="line"><span class="regexp">&lt;script src="&#123;&#123; url_for(theme.js) &#125;&#125;/</span>src/photoswipe-ui-<span class="keyword">default</span>.min.js?v=&#123;&#123; theme.version &#125;&#125;<span class="string">"&gt;&lt;/script&gt;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>在body中添加如下的内容：</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">&#123;% <span class="keyword">if</span> page.type === <span class="string">"photos"</span> %&#125;</span><br><span class="line">  &lt;!-- Root element <span class="keyword">of</span> PhotoSwipe. Must have <span class="class"><span class="keyword">class</span> <span class="title">pswp</span>. --&gt;</span></span><br><span class="line"><span class="class">  &lt;<span class="title">div</span> <span class="title">class</span></span>=<span class="string">"pswp"</span> tabindex=<span class="string">"-1"</span> role=<span class="string">"dialog"</span> aria-hidden=<span class="string">"true"</span>&gt;</span><br><span class="line">    &lt;div <span class="class"><span class="keyword">class</span></span>=<span class="string">"pswp__bg"</span>&gt;&lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">    &lt;div class="pswp__scroll-wrap"&gt;</span></span><br><span class="line"><span class="regexp">        &lt;div class="pswp__container"&gt;</span></span><br><span class="line"><span class="regexp">            &lt;div class="pswp__item"&gt;&lt;/</span>div&gt;</span><br><span class="line">            &lt;div <span class="class"><span class="keyword">class</span></span>=<span class="string">"pswp__item"</span>&gt;&lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">            &lt;div class="pswp__item"&gt;&lt;/</span>div&gt;</span><br><span class="line">        &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">        &lt;div class="pswp__ui pswp__ui--hidden"&gt;</span></span><br><span class="line"><span class="regexp">            &lt;div class="pswp__top-bar"&gt;</span></span><br><span class="line"><span class="regexp">                &lt;div class="pswp__counter"&gt;&lt;/</span>div&gt;</span><br><span class="line">                &lt;button <span class="class"><span class="keyword">class</span></span>=<span class="string">"pswp__button pswp__button--close"</span> title=<span class="string">"Close (Esc)"</span>&gt;&lt;<span class="regexp">/button&gt;</span></span><br><span class="line"><span class="regexp">                &lt;button class="pswp__button pswp__button--share" title="Share"&gt;&lt;/</span>button&gt;</span><br><span class="line">                &lt;button <span class="class"><span class="keyword">class</span></span>=<span class="string">"pswp__button pswp__button--fs"</span> title=<span class="string">"Toggle fullscreen"</span>&gt;&lt;<span class="regexp">/button&gt;</span></span><br><span class="line"><span class="regexp">                &lt;button class="pswp__button pswp__button--zoom" title="Zoom in/</span>out<span class="string">"&gt;&lt;/button&gt;</span></span><br><span class="line"><span class="string">                &lt;!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR --&gt;</span></span><br><span class="line"><span class="string">                &lt;!-- element will get class pswp__preloader--active when preloader is running --&gt;</span></span><br><span class="line"><span class="string">                &lt;div class="</span>pswp__preloader<span class="string">"&gt;</span></span><br><span class="line"><span class="string">                    &lt;div class="</span>pswp__preloader__icn<span class="string">"&gt;</span></span><br><span class="line"><span class="string">                      &lt;div class="</span>pswp__preloader__cut<span class="string">"&gt;</span></span><br><span class="line"><span class="string">                        &lt;div class="</span>pswp__preloader__donut<span class="string">"&gt;&lt;/div&gt;</span></span><br><span class="line"><span class="string">                      &lt;/div&gt;</span></span><br><span class="line"><span class="string">                    &lt;/div&gt;</span></span><br><span class="line"><span class="string">                &lt;/div&gt;</span></span><br><span class="line"><span class="string">            &lt;/div&gt;</span></span><br><span class="line"><span class="string">            &lt;div class="</span>pswp__share-modal pswp__share-modal--hidden pswp__single-tap<span class="string">"&gt;</span></span><br><span class="line"><span class="string">                &lt;div class="</span>pswp__share-tooltip<span class="string">"&gt;&lt;/div&gt; </span></span><br><span class="line"><span class="string">            &lt;/div&gt;</span></span><br><span class="line"><span class="string">            &lt;button class="</span>pswp__button pswp__button--arrow--left<span class="string">" title="</span>Previous (arrow left)<span class="string">"&gt;</span></span><br><span class="line"><span class="string">            &lt;/button&gt;</span></span><br><span class="line"><span class="string">            &lt;button class="</span>pswp__button pswp__button--arrow--right<span class="string">" title="</span>Next (arrow right)<span class="string">"&gt;</span></span><br><span class="line"><span class="string">            &lt;/button&gt;</span></span><br><span class="line"><span class="string">            &lt;div class="</span>pswp__caption<span class="string">"&gt;</span></span><br><span class="line"><span class="string">                &lt;div class="</span>pswp__caption__center<span class="string">"&gt;&lt;/div&gt;</span></span><br><span class="line"><span class="string">            &lt;/div&gt;</span></span><br><span class="line"><span class="string">        &lt;/div&gt;</span></span><br><span class="line"><span class="string">    &lt;/div&gt;</span></span><br><span class="line"><span class="string">  &lt;/div&gt;</span></span><br><span class="line"><span class="string">&#123;% endif %&#125;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>在<code>/themes/next/layout/_scripts/pages/post-details.swig</code>中添加：</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;script type=<span class="string">"text/javascript"</span> src=<span class="string">"&#123;&#123; url_for(theme.js) &#125;&#125;/src/photoswipe.min.js?v=&#123;&#123; theme.version &#125;&#125;"</span>&gt;&lt;<span class="regexp">/script&gt;</span></span><br><span class="line"><span class="regexp">&lt;script type="text/</span>javascript<span class="string">" src="</span>&#123;&#123; url_for(theme.js) &#125;&#125;/src/photoswipe-ui-<span class="keyword">default</span>.min.js?v=&#123;&#123; theme.version &#125;&#125;<span class="string">"&gt;&lt;/script&gt;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>修改相册时间轴年份CSS样式</li>
+</ul>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.instagram</span> <span class="selector-class">.year</span> &#123;</span><br><span class="line">	<span class="attribute">font-size</span>: <span class="number">16px</span>;</span><br><span class="line">	color: #555; //修改成自己的配色</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>cherryzzangg
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://cherryzzangg.site/2019/02/10/HEXO%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E7%9B%B8%E5%86%8C/" title="HEXO博客搭建相册">http://cherryzzangg.site/2019/02/10/HEXO博客搭建相册/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/hexo/" rel="tag"># hexo</a>
+          </div>
+
+        
+  <div class="post-widgets">
+    <div class="wp_rating">
+      <div id="wpac-rating"></div>
+    </div>
+  </div>
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/02/10/Win10%E7%A7%92%E5%8F%98Mac%E6%89%93%E9%80%A0%E9%85%B7%E7%82%AB%E6%A1%8C%E9%9D%A2/" rel="prev" title="打造酷炫桌面——win10秒变mac">
+      <i class="fa fa-chevron-left"></i> 打造酷炫桌面——win10秒变mac
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    <div class="comments" id="valine-comments"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#前言"><span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-安装fancybox功能"><span class="nav-text">1. 安装fancybox功能</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-修改配置文件"><span class="nav-text">1.1 修改配置文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-按照fancybox官网的安装步骤"><span class="nav-text">1.2 按照fancybox官网的安装步骤</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-图片处理"><span class="nav-text">2. 图片处理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-博客相册页面"><span class="nav-text">3. 博客相册页面</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-js-CSS文件"><span class="nav-text">4. js&amp;CSS文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-其他配置"><span class="nav-text">5. 其他配置</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="cherryzzangg"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">cherryzzangg</p>
+  <div class="site-description" itemprop="description">Drive it like you stole it.</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">14</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">19</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/cherryzzangg" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;cherryzzangg" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="http://weibo.com/cherryzzangg" title="Weibo → http:&#x2F;&#x2F;weibo.com&#x2F;cherryzzangg" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-globe"></i>
+      友情链接
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="http://rowl1ng.com/" title="http:&#x2F;&#x2F;rowl1ng.com&#x2F;" rel="noopener" target="_blank">黑客与画家</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2017 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">cherryzzangg</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    <span title="站点总字数">34k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">31 分钟</span>
+</div>
+  <div class="theme-info">主题 – <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> v7.7.2
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        你是来访的第<span id="busuanzi_value_site_uv"></span>位小可爱
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+  <script>
+  if (CONFIG.page.isPost) {
+    wpac_init = window.wpac_init || [];
+    wpac_init.push({
+      widget: 'Rating',
+      id    : 15466,
+      el    : 'wpac-rating',
+      color : 'fc6423'
+    });
+    (function() {
+      if ('WIDGETPACK_LOADED' in window) return;
+      WIDGETPACK_LOADED = true;
+      var mc = document.createElement('script');
+      mc.type = 'text/javascript';
+      mc.async = true;
+      mc.src = '//embed.widgetpack.com/widget.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(mc, s.nextSibling);
+    })();
+  }
+  </script>
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+<script>
+NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
+  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
+    var GUEST = ['nick', 'mail', 'link'];
+    var guest = 'nick,mail';
+    guest = guest.split(',').filter(item => {
+      return GUEST.includes(item);
+    });
+    new Valine({
+      el         : '#valine-comments',
+      verify     : false,
+      notify     : true,
+      appId      : 'Y51WeJj4vh2LlCCfc36MXUsp-gzGzoHsz',
+      appKey     : 'CYV17ycmtp6jgUOIOX2e9cU5',
+      placeholder: "留下邮箱，回复会有提醒哦~",
+      avatar     : 'mm',
+      meta       : guest,
+      pageSize   : '10' || 10,
+      visitor    : true,
+      lang       : '' || 'zh-cn',
+      path       : location.pathname,
+      recordIP   : false,
+      serverURLs : ''
+    });
+  }, window.Valine);
+});
+</script>
+
+</body>
+</html>
+
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/love.js"></script>
